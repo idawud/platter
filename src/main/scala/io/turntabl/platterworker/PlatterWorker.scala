@@ -7,8 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 object PlatterWorker extends App {
  // SpringApplication.run(classOf[BootConfig])
  val wp = new WeatherDataProcessing()
- val gp = wp.toJsonString()
- println(gp)
+ wp.grouping()
 }
 
 @SpringBootApplication

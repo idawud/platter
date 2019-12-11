@@ -9,14 +9,16 @@ class WeatherDataProcessing {
 
   def grouping() = {
     val data = weatherData.forecastFromAllStations()
-    val byCountry = data groupBy(f => f.country) toMap()
-    byCountry
+    println(data)
+   // val byCountry = data groupBy(f => f.country)
+   // byCountry.keys map( x => byCountry.get(x).groupBy(f => f.groupBy(g => g.information.unitaryAuthArea)))
   }
+
   def toJsonString() = {
     val data = grouping()
     //val dat = (new Gson()).toJson(data)
     //dat
-    println(data)
-    (new ObjectMapper).writeValueAsString(data)
+   // val records = data map( x =>  (new ObjectMapper).writeValueAsString(x))
+   // records foreach println
   }
 }
