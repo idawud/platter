@@ -1,7 +1,7 @@
 plugins {
 	id 'org.springframework.boot' version '2.2.2.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
-	id 'java'
+	id 'scala'
 }
 
 group = 'io.turntabl'
@@ -23,6 +23,9 @@ dependencies {
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
+	implementation 'org.scala-lang:scala-library:2.11.12'
+	testImplementation 'org.scalatest:scalatest_2.11:3.0.0'
+	compile  'com.google.code.gson:gson:2.8.5'      // gson
 }
 
 dependencyManagement {
