@@ -1,13 +1,12 @@
 package io.turntabl.platterworker.services
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.google.gson.{Gson, JsonArray, JsonObject}
+import com.google.gson.{JsonArray, JsonObject}
 import io.turntabl.platterworker.models.{Forecast, StationForecast, StationInformation, WeatherData}
 
 class WeatherDataProcessing {
   private val weatherData = new WeatherDataFetching
 
-  def grouping() = {
+  def grouping(): List[StationForecast] = {
     val data = List( StationForecast(StationInformation("23.0", "14", "656565", "858858", "london", "morray"), "ENGLAND", "2019-12-23T12:00:00Z",
       List(Forecast("2019-12-23T12:00:00Z", WeatherData("3","3","3","3","3","3","3","3","3","3")),
         Forecast("2019-12-23T12:00:00Z", WeatherData("3","3","3","3","3","3","3","3","3","3")))),
@@ -31,11 +30,11 @@ class WeatherDataProcessing {
     data
   }
 
-  def StationForecastJson(station: StationForecast, countriesObj: JsonObject) = {
-
+  def StationForecastJson(station: StationForecast, countriesObj: JsonObject): Unit = {
     val information = stationInformationJson(station.information)
     val forecast = station.forecast map forecastJson
     val forecastObj = new JsonArray()
+
     forecast foreach(x => forecastObj.add(x))
 
     information.add("periods", forecastObj)
@@ -45,7 +44,8 @@ class WeatherDataProcessing {
       val initObj = new JsonObject
       initObj.add(station.information.unitaryAuthArea, information)
       countriesObj.get(station.country).getAsJsonArray.add(initObj)
-    }else{
+    }
+    else {
        val initObj = new JsonObject
       initObj.add(station.information.unitaryAuthArea, information)
       val y = new JsonArray()
@@ -54,9 +54,7 @@ class WeatherDataProcessing {
     }
   }
 
-
-
-  def toJsonString() = {
+  def toJsonString: JsonObject = {
     val data = grouping()
     val countriesObj = new JsonObject
     data foreach(x => StationForecastJson(x, countriesObj))
