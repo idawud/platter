@@ -88,7 +88,7 @@ class WeatherDataProcessing {
     obj.addProperty("latitude", info.latitude)
     obj.addProperty("longitude", info.longitude)
     obj.addProperty("name", info.name)
-    obj.addProperty("unitaryAuthArea", info.unitaryAuthArea)
+    //obj.addProperty("unitaryAuthArea", info.unitaryAuthArea)
     obj
   }
 }

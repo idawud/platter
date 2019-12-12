@@ -1,6 +1,5 @@
 package io.turntabl.platterworker
 
-import com.google.gson.JsonNull
 import io.turntabl.platterworker.services.WeatherDataProcessing
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
