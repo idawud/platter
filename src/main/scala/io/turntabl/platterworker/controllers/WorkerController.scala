@@ -22,6 +22,7 @@ class WorkerController {
     Files.createFile(Paths.get(filename))
     Files.write(Paths.get(filename), data.getBytes())
     CloudStorage.upload(Paths.get(filename))
+    Files.delete(Paths.get(filename))
 
     data
   }
