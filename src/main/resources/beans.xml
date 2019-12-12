@@ -8,6 +8,6 @@
 
     <aws-context:context-region region="eu-west-1"/>
     <aws-context:context-credentials>
-        <aws-context:simple-credentials access-key="AKIAIK3VHLQEQPOOS45Q" secret-key="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" />
+        <aws-context:simple-credentials access-key="AKIAIJNSDYBK2CQFVL2A" secret-key="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" />
     </aws-context:context-credentials>
 </beans>
