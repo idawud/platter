@@ -6,19 +6,24 @@ import java.time.LocalDateTime
 import com.google.gson.JsonParser
 import io.turntabl.platterworker.AWS.CloudStorage
 import io.turntabl.platterworker.services.WeatherDataProcessing
-import org.springframework.web.bind.annotation.{GetMapping, RestController}
+import org.springframework.web.bind.annotation.{GetMapping, RequestMapping, RequestMethod, RestController}
 
 
 @RestController
+@RequestMapping(path = Array("/api/v1"))
 class WorkerController {
-
-  @GetMapping(Array("/"))
+  @GetMapping
   def index(): String = {
     "Welcome Home"
   }
 
-  @GetMapping(path = Array("/schedule"))
-  def listAll(): String =  {
+  @RequestMapping(path = Array("/hello"), method = Array(RequestMethod.GET))
+  def hello(): String =  {
+    "Hello"
+  }
+
+  @RequestMapping(path = Array("/schedule"), method = Array(RequestMethod.GET))
+  def scheduledTask(): String =  {
     val wp = new WeatherDataProcessing()
     val data = wp.toJsonString.toString
 
