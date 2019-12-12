@@ -19,12 +19,13 @@ ext {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	// implementation 'org.springframework.cloud:spring-cloud-starter-aws'
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
 	implementation 'org.scala-lang:scala-library:2.11.12'
 	testImplementation 'org.scalatest:scalatest_2.11:3.0.0'
+	// compile group: 'com.amazonaws', name: 'aws-java-sdk', version: '1.11.690'
 	compile  'com.google.code.gson:gson:2.8.5'      // gson
 }
 

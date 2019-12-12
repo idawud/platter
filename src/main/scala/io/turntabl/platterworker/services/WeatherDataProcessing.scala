@@ -55,7 +55,7 @@ class WeatherDataProcessing {
   }
 
   def toJsonString: JsonObject = {
-    val data = grouping()
+    val data = weatherData.forecastFromAllStations()
     val countriesObj = new JsonObject
     data foreach(x => StationForecastJson(x, countriesObj))
     countriesObj
