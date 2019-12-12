@@ -5,7 +5,6 @@ import java.nio.file.Path
 import com.amazonaws.auth.{AWSStaticCredentialsProvider, BasicAWSCredentials}
 import com.amazonaws.regions.Regions
 import com.amazonaws.services.s3.{AmazonS3, AmazonS3ClientBuilder}
-import org.springframework.beans.factory.annotation.Autowired
 
 object CloudStorage {
   def upload(path: Path) = {

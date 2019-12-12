@@ -6,7 +6,7 @@ import io.turntabl.platterworker.models.{Forecast, StationForecast, StationInfor
 class WeatherDataProcessing {
   private val weatherData = new WeatherDataFetching
 
-  def grouping(): List[StationForecast] = {
+ /* def grouping(): List[StationForecast] = {
     val data = List( StationForecast(StationInformation("23.0", "14", "656565", "858858", "london", "morray"), "ENGLAND", "2019-12-23T12:00:00Z",
       List(Forecast("2019-12-23T12:00:00Z", WeatherData("3","3","3","3","3","3","3","3","3","3")),
         Forecast("2019-12-23T12:00:00Z", WeatherData("3","3","3","3","3","3","3","3","3","3")))),
@@ -28,7 +28,7 @@ class WeatherDataProcessing {
           Forecast("2019-12-23T12:00:00Z", WeatherData("3","3","3","3","3","3","3","3","3","3"))))
     )
     data
-  }
+  }*/
 
   def StationForecastJson(station: StationForecast, countriesObj: JsonObject): Unit = {
     val information = stationInformationJson(station.information)
