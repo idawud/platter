@@ -6,32 +6,8 @@ import io.turntabl.platterworker.models.{Forecast, StationForecast, StationInfor
 class WeatherDataProcessing {
   private val weatherData = new WeatherDataFetching
 
-  def grouping(): List[StationForecast] = {
-    val data = List( StationForecast(StationInformation("23.0", "14", "656565", "858858", "london", "morray"), "New ENGLAND", "2019-12-23T12:00:00Z",
-      List(Forecast("2019-12-23T12:00:00Z", WeatherData("3","3","3","3","3","3","3","3","3","3")),
-        Forecast("2019-12-23T12:00:00Z", WeatherData("3","3","3","3","3","3","3","3","3","3")))),
-
-      StationForecast(StationInformation("23.0", "14", "656565", "858858", "london", "Accra"), "Ghana", "2019-12-23T12:00:00Z",
-        List(Forecast("2019-12-23T12:00:00Z", WeatherData("3","3","3","3","3","3","3","3","3","3")),
-          Forecast("2019-12-23T12:00:00Z", WeatherData("3","3","3","3","3","3","3","3","3","3")))),
-
-      StationForecast(StationInformation("23.0", "14", "656565", "858858", "london", "surrey"), "Scotland", "2019-12-23T12:00:00Z",
-        List(Forecast("2019-12-23T12:00:00Z", WeatherData("3","3","3","3","3","3","3","3","3","3")),
-          Forecast("2019-12-23T12:00:00Z", WeatherData("3","3","3","3","3","3","3","3","3","3")))),
-
-      StationForecast(StationInformation("23.0", "14", "656565", "858858", "london", "manchester"), "ENGLAND", "2019-12-23T12:00:00Z",
-        List(Forecast("2019-12-23T12:00:00Z", WeatherData("3","3","3","3","3","3","3","3","3","3")),
-          Forecast("2019-12-23T12:00:00Z", WeatherData("3","3","3","3","3","3","3","3","3","3")))),
-
-      StationForecast(StationInformation("23.0", "14", "656565", "858858", "london", "greater-london"), "ENGLAND", "2019-12-23T12:00:00Z",
-        List(Forecast("2019-12-23T12:00:00Z", WeatherData("3","3","3","3","3","3","3","3","3","3")),
-          Forecast("2019-12-23T12:00:00Z", WeatherData("3","3","3","3","3","3","3","3","3","3"))))
-    )
-    data
-  }
-
-  def countyInfoToJsonString(stationForecast: StationForecast) = {
-   val country:String =  stationForecast.country
+  def countyInfoToJsonString(stationForecast: StationForecast): (String, JsonObject) = {
+    val country:String =  stationForecast.country
     val county:String = stationForecast.information.unitaryAuthArea
     val information = stationInformationJson(stationForecast.information)
     val forecast = stationForecast.forecast map forecastJson
@@ -41,39 +17,10 @@ class WeatherDataProcessing {
 
     information.add("periods", forecastObj)
     information.addProperty("dataDate", stationForecast.dataDate)
+    information.addProperty("country", stationForecast.country)
     (s"$country/$county/", information)
   }
 
-  def StationForecastJson(station: StationForecast, countriesObj: JsonObject): Unit = {
-    val information = stationInformationJson(station.information)
-    val forecast = station.forecast map forecastJson
-    val forecastObj = new JsonArray()
-
-    forecast foreach(x => forecastObj.add(x))
-
-    information.add("periods", forecastObj)
-    information.addProperty("dataDate", station.dataDate)
-
-    if ( countriesObj.keySet().contains(station.country)){
-      val initObj = new JsonObject
-      initObj.add(station.information.unitaryAuthArea, information)
-      countriesObj.get(station.country).getAsJsonArray.add(initObj)
-    }
-    else {
-       val initObj = new JsonObject
-      initObj.add(station.information.unitaryAuthArea, information)
-      val y = new JsonArray()
-        y.add(initObj)
-      countriesObj.add(station.country, y)
-    }
-  }
-
-  def toJsonString: JsonObject = {
-    val data = weatherData.forecastFromAllStations()
-    val countriesObj = new JsonObject
-    data foreach(x => StationForecastJson(x, countriesObj))
-    countriesObj
-  }
 
   def forecastJson(forecast: Forecast): JsonObject = {
     val obj = new JsonObject()
@@ -100,7 +47,7 @@ class WeatherDataProcessing {
     obj.addProperty("latitude", info.latitude)
     obj.addProperty("longitude", info.longitude)
     obj.addProperty("name", info.name)
-    //obj.addProperty("unitaryAuthArea", info.unitaryAuthArea)
+    obj.addProperty("county", info.unitaryAuthArea)
     obj
   }
 }
