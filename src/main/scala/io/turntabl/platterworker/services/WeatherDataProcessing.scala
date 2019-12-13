@@ -6,8 +6,8 @@ import io.turntabl.platterworker.models.{Forecast, StationForecast, StationInfor
 class WeatherDataProcessing {
   private val weatherData = new WeatherDataFetching
 
- /* def grouping(): List[StationForecast] = {
-    val data = List( StationForecast(StationInformation("23.0", "14", "656565", "858858", "london", "morray"), "ENGLAND", "2019-12-23T12:00:00Z",
+  def grouping(): List[StationForecast] = {
+    val data = List( StationForecast(StationInformation("23.0", "14", "656565", "858858", "london", "morray"), "New ENGLAND", "2019-12-23T12:00:00Z",
       List(Forecast("2019-12-23T12:00:00Z", WeatherData("3","3","3","3","3","3","3","3","3","3")),
         Forecast("2019-12-23T12:00:00Z", WeatherData("3","3","3","3","3","3","3","3","3","3")))),
 
@@ -28,7 +28,21 @@ class WeatherDataProcessing {
           Forecast("2019-12-23T12:00:00Z", WeatherData("3","3","3","3","3","3","3","3","3","3"))))
     )
     data
-  }*/
+  }
+
+  def countyInfoToJsonString(stationForecast: StationForecast) = {
+   val country:String =  stationForecast.country
+    val county:String = stationForecast.information.unitaryAuthArea
+    val information = stationInformationJson(stationForecast.information)
+    val forecast = stationForecast.forecast map forecastJson
+    val forecastObj = new JsonArray()
+
+    forecast foreach(x => forecastObj.add(x))
+
+    information.add("periods", forecastObj)
+    information.addProperty("dataDate", stationForecast.dataDate)
+    (s"$country/$county/", information)
+  }
 
   def StationForecastJson(station: StationForecast, countriesObj: JsonObject): Unit = {
     val information = stationInformationJson(station.information)
