@@ -14,7 +14,7 @@ object CloudStorage {
   }
 
   private def connectionInstance = {
-    val credentials = new BasicAWSCredentials("AKIAIJNSDYBK2CQFVL2A", "AqBMVTCbWlUSdUs2iIxnJEQ8EgUaXe0o5/D3LIXb")
+    val credentials = new BasicAWSCredentials(sys.env.getOrElse("aws_acces", "aws_x"), sys.env.getOrElse("aws_secret", "aes_sec"))
     val s3client = AmazonS3ClientBuilder
       .standard()
       .withCredentials(new AWSStaticCredentialsProvider(credentials))
