@@ -4,7 +4,6 @@ import com.google.gson.{JsonArray, JsonObject}
 import io.turntabl.platterworker.models.{Forecast, StationForecast, StationInformation, WeatherData}
 
 class WeatherDataProcessing {
-  private val weatherData = new WeatherDataFetching
 
   def countyInfoToJsonString(stationForecast: StationForecast): (String, JsonObject) = {
     val country:String =  stationForecast.country

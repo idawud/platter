@@ -9,10 +9,10 @@ import java.lang.{Double, Exception}
 import org.springframework.boot.autoconfigure.SpringBootApplication
 
 object PlatterWorker extends App {
- // SpringApplication.run(classOf[BootConfig])
+ SpringApplication.run(classOf[BootConfig])
  // ServiceRunner.run()
 
- ServiceRunner.aggregation()
+ // ServiceRunner.aggregation()
 }
 
 @SpringBootApplication
