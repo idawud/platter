@@ -4,6 +4,7 @@ import com.google.gson.{JsonArray, JsonObject}
 import io.turntabl.platterworker.models.{Forecast, StationForecast, StationInformation, WeatherData}
 
 class WeatherDataProcessing {
+  private def parseToDouble(num: String): Double = try  java.lang.Double.valueOf(num) catch {case e: Exception => 0.0}
 
   def countyInfoToJsonString(stationForecast: StationForecast): (String, JsonObject) = {
     val country:String =  stationForecast.country
@@ -17,9 +18,30 @@ class WeatherDataProcessing {
     information.add("periods", forecastObj)
     information.addProperty("dataDate", stationForecast.dataDate)
     information.addProperty("country", stationForecast.country)
+
+    val summary: JsonObject = getAveragesAsJson(stationForecast)
+
+    information.add("summary", summary)
     (s"$country/$county/", information)
   }
 
+
+  private def getAveragesAsJson(stationForecast: StationForecast): JsonObject = {
+    val (temp: Double, humidity: Double, windSpeed: Double) = getAverages(stationForecast)
+
+    val summary = new JsonObject
+    summary.addProperty("temp", temp)
+    summary.addProperty("humidity", humidity)
+    summary.addProperty("windSpeed", windSpeed)
+    summary
+  }
+
+  def getAverages(stationForecast: StationForecast): (Double, Double, Double) = {
+    val temp: Double = (stationForecast.forecast map (x => parseToDouble(x.data.temperature))).sum / 8
+    val humidity: Double = (stationForecast.forecast map (x => parseToDouble(x.data.humidity))).sum / 8
+    val windSpeed: Double = (stationForecast.forecast map (x => parseToDouble(x.data.windSpeed))).sum / 8
+    (temp, humidity, windSpeed)
+  }
 
   def forecastJson(forecast: Forecast): JsonObject = {
     val obj = new JsonObject()
