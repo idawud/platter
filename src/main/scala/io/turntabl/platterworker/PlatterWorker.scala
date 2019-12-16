@@ -6,9 +6,11 @@ import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 
 object PlatterWorker extends App {
- SpringApplication.run(classOf[BootConfig])
+ // SpringApplication.run(classOf[BootConfig])
  // ServiceRunner.run()
-
+  val databaseUrl: String = System.getenv("DATABASE_URL")
+  println(databaseUrl)
+  println(sys.env.get("DATABASE_URL"))
 }
 
 @SpringBootApplication
