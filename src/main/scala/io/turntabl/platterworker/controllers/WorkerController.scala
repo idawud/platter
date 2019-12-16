@@ -17,7 +17,7 @@ class WorkerController {
   @RequestMapping(path = Array("/hello"), method = Array(RequestMethod.GET))
   def hello(): String = "Hello"
 
-  @RequestMapping(path = Array("/schedule"), method = Array(RequestMethod.GET), produces = Array(MediaType.APPLICATION_JSON_VALUE))
+  @RequestMapping(path = Array("/place"), method = Array(RequestMethod.GET), produces = Array(MediaType.APPLICATION_JSON_VALUE))
   def scheduledTask(): JsonObject =  {
     val parser = new JsonParser
     val content: String = CloudStorage.contentOfObject("WALES/Carmarthenshire/2019-12-13T16:10:42.json")
