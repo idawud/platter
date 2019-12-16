@@ -5,7 +5,7 @@ import java.nio.file.Path
 
 import com.amazonaws.auth.{AWSStaticCredentialsProvider, BasicAWSCredentials}
 import com.amazonaws.regions.Regions
-import com.amazonaws.services.s3.model.{ObjectListing, PutObjectResult}
+import com.amazonaws.services.s3.model.{ObjectListing, PutObjectResult, S3ObjectInputStream}
 import com.amazonaws.services.s3.{AmazonS3, AmazonS3ClientBuilder}
 
 import scala.collection.mutable
@@ -24,9 +24,7 @@ object CloudStorage {
   def contentOfObject(objectPath: String): String = {
     val s3object = s3client.getObject(bucketName, objectPath)
     val inputStream = s3object.getObjectContent
-    val content: Array[Byte] = inputStream.readAllBytes()
-    val str = new String(content, StandardCharsets.UTF_8)
-    str
+    scala.io.Source.fromInputStream(inputStream).mkString
   }
 
   def upload(timestamp: String, filename: String, path: Path): PutObjectResult = s3client.putObject( bucketName, s"${filename}${timestamp}.json",  path.toFile)
