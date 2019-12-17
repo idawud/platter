@@ -32,7 +32,7 @@ class WorkerController() {
     val iter = places.iterator()
     while ( iter.hasNext ) {
       val value = iter.next()
-      if ( value.toLowerCase.contains(name.toLowerCase)){ arr.add(value) }
+      if ( value.toLowerCase.contains(name.trim.toLowerCase)){ arr.add(value) }
     }
 
     val obj = new JsonObject
@@ -59,9 +59,9 @@ class WorkerController() {
     val places: String = CloudStorage.contentOfObject("register/places_register.json")
     val jobberz = parser.parse(places)
 
-    if ( jobberz.getAsJsonObject.keySet().contains(name)) {
-      val route: String = jobberz.getAsJsonObject.get(name).getAsString
-      val contents: String = CloudStorage.contentOfObject(s"${route}${date}${name}.json")
+    if ( jobberz.getAsJsonObject.keySet().contains(name.trim)) {
+      val route: String = jobberz.getAsJsonObject.get(name.trim).getAsString
+      val contents: String = CloudStorage.contentOfObject(s"${route}${date}${name.trim}.json")
       val jobber = parser.parse(contents)
       return jobber.getAsJsonObject
     }
