@@ -8,6 +8,8 @@ import io.turntabl.platterworker.AWS.CloudStorage
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation._
 
+import scala.collection.mutable.ListBuffer
+
 
 @RestController
 @CrossOrigin(origins = Array("*"))
@@ -21,13 +23,25 @@ class WorkerController() {
     places
   }
 
-  @GetMapping
-  def index(): String = {
-    "done"
+
+  @RequestMapping(path = Array("/search"), method = Array(RequestMethod.GET), produces = Array(MediaType.APPLICATION_JSON_VALUE))
+  def search(@RequestParam("name") name: String): JsonObject = {
+    val  places = getPlaces
+    val arr = new JsonArray()
+
+    val iter = places.iterator()
+    while ( iter.hasNext ) {
+      val value = iter.next()
+      if ( value.toLowerCase.contains(name.toLowerCase)){ arr.add(value) }
+    }
+
+    val obj = new JsonObject
+    obj.add("places", arr)
+    obj
   }
 
   @RequestMapping(path = Array("/places"), method = Array(RequestMethod.GET), produces = Array(MediaType.APPLICATION_JSON_VALUE))
-  def hello(): JsonObject = {
+  def places(): JsonObject = {
     val  places = getPlaces
     val arr = new JsonArray
     val iter = places.iterator()
@@ -38,7 +52,7 @@ class WorkerController() {
   }
 
   @RequestMapping(path = Array("/place"), method = Array(RequestMethod.GET), produces = Array(MediaType.APPLICATION_JSON_VALUE))
-  def scheduledTask(@RequestParam("name") name: String): JsonObject =  {
+  def placeData(@RequestParam("name") name: String): JsonObject =  {
     val parser = new JsonParser
     val date: String = s"${LocalDateTime.now().withNano(0).withHour(0).withMinute(0).withSecond(0).plusDays(1)}"
 
