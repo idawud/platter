@@ -27,7 +27,9 @@ object CloudStorage {
   def upload(timestamp: String, filename: String, path: Path): PutObjectResult = s3client.putObject( bucketName, s"${filename}${timestamp}.json",  path.toFile)
 
   private def connectionInstance = {
-    val credentials = new BasicAWSCredentials(System.getenv("AWS_KEY"), System.getenv("AWS_SECRET") )
+    // val credentials = new BasicAWSCredentials(System.getenv("AWS_KEY"), System.getenv("AWS_SECRET") )
+    val credentials = new BasicAWSCredentials("AKIAJQPLSTRZCD3ZRBNQ", "mmnVkm/9OAcYtpVnMVf+bmqXs33oyXyFbUxfizmw" )
+
     val s3client = AmazonS3ClientBuilder
       .standard()
       .withCredentials(new AWSStaticCredentialsProvider(credentials))

@@ -17,16 +17,19 @@ ext {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-mail'
+	// implementation 'org.springframework.boot:spring-boot-starter-mail'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	// implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws'
+	runtimeOnly 'org.postgresql:postgresql'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
 	implementation 'org.scala-lang:scala-library:2.11.12'
 	testImplementation 'org.scalatest:scalatest_2.11:3.0.0'
 	compile  'com.google.code.gson:gson:2.8.5'      // gson
-	// compile group: 'org.json4s', name: 'json4s-jackson_2.13', version: '3.7.0-M1'
+	compile("io.springfox:springfox-swagger2:2.9.2")
+	compile("io.springfox:springfox-swagger-ui:2.9.2")
 
 }
 

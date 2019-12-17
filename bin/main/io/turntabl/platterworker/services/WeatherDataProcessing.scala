@@ -1,7 +1,7 @@
 package io.turntabl.platterworker.services
 
 import com.google.gson.{JsonArray, JsonObject}
-import io.turntabl.platterworker.models.{Forecast, StationForecast, StationInformation}
+import io.turntabl.platterworker.models.{Forecast, StationForecast, StationInformation, WeatherData}
 
 class WeatherDataProcessing {
   private def parseToDouble(num: String): Double = try  java.lang.Double.valueOf(num) catch {case e: Exception => 0.0}

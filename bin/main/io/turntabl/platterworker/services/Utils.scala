@@ -10,7 +10,7 @@ import io.turntabl.platterworker.models.StationInformation
 
 object Utils {
     private val API_BASE: String = "http://datapoint.metoffice.gov.uk/public/data/val/"
-    private val API_KEY: String = "?res=3hourly&key=73947985-1151-407a-8887-64ec23981670"
+    private val API_KEY: String = "?res=3hourly&key=ca3ee938-3ade-405e-adc1-38990741404b"
 
     def fetchDataFromApiEndpoint(urlSectionPart: String): JsonElement = {
       val request = HttpRequest.newBuilder().uri(new URI(API_BASE + urlSectionPart + API_KEY)).build()

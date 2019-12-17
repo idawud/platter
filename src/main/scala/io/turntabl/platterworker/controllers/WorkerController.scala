@@ -1,27 +1,60 @@
 package io.turntabl.platterworker.controllers
 
 
-import com.google.gson.{JsonObject, JsonParser}
+import java.time.LocalDateTime
+
+import com.google.gson.{JsonArray, JsonObject, JsonParser}
 import io.turntabl.platterworker.AWS.CloudStorage
 import org.springframework.http.MediaType
-import org.springframework.web.bind.annotation.{CrossOrigin, GetMapping, RequestMapping, RequestMethod, RestController}
+import org.springframework.web.bind.annotation._
 
 
 @RestController
 @CrossOrigin(origins = Array("*"))
 @RequestMapping(path = Array("/api/v1"))
-class WorkerController {
-  @GetMapping
-  def index(): String = "Welcome Home"
+class WorkerController() {
+  private def getPlaces = {
+    val parser = new JsonParser
+    val content: String = CloudStorage.contentOfObject("register/places_register.json")
+    val jobber = parser.parse(content)
+    val places = jobber.getAsJsonObject.keySet()
+    places
+  }
 
-  @RequestMapping(path = Array("/hello"), method = Array(RequestMethod.GET))
-  def hello(): String = "Hello"
+  @GetMapping
+  def index(): String = {
+    "done"
+  }
+
+  @RequestMapping(path = Array("/places"), method = Array(RequestMethod.GET), produces = Array(MediaType.APPLICATION_JSON_VALUE))
+  def hello(): JsonObject = {
+    val  places = getPlaces
+    val arr = new JsonArray
+    val iter = places.iterator()
+    while ( iter.hasNext ) { arr.add(iter.next())}
+    val obj = new JsonObject
+    obj.add("places", arr)
+    obj
+  }
 
   @RequestMapping(path = Array("/place"), method = Array(RequestMethod.GET), produces = Array(MediaType.APPLICATION_JSON_VALUE))
-  def scheduledTask(): JsonObject =  {
+  def scheduledTask(@RequestParam("name") name: String): JsonObject =  {
     val parser = new JsonParser
-    val content: String = CloudStorage.contentOfObject("WALES/Carmarthenshire/2019-12-13T16:10:42.json")
-    val jobber = parser.parse(content)
-    jobber.getAsJsonObject
+    val date: String = s"${LocalDateTime.now().withNano(0).withHour(0).withMinute(0).withSecond(0).plusDays(1)}"
+
+    val places: String = CloudStorage.contentOfObject("register/places_register.json")
+    val jobberz = parser.parse(places)
+
+    if ( jobberz.getAsJsonObject.keySet().contains(name)) {
+      val route: String = jobberz.getAsJsonObject.get(name).getAsString
+      val contents: String = CloudStorage.contentOfObject(s"${route}${date}${name}.json")
+      val jobber = parser.parse(contents)
+      return jobber.getAsJsonObject
+    }
+
+    val defaultObj = new JsonObject
+    defaultObj.addProperty("error", "PlaceNotFound")
+    defaultObj
   }
+
 }

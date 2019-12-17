@@ -5,7 +5,7 @@ import java.time.LocalDateTime
 
 import com.google.gson.JsonObject
 import io.turntabl.platterworker.AWS.CloudStorage
-import io.turntabl.platterworker.models.StationForecast
+import io.turntabl.platterworker.models.{Forecast, StationForecast, StationInformation, WeatherData}
 
 object ServiceRunner {
   private val dataProcessing = new WeatherDataProcessing
@@ -15,26 +15,13 @@ object ServiceRunner {
      val data: List[StationForecast] = fetchData.forecastFromAllStations()
      rawData(data)
      aggregation(data)
-     updateRegister(data)
    }
-
-  private def updateRegister(data: List[StationForecast]) = {
-    val datax: List[(String, JsonObject)] = data.map(x => dataProcessing.countyInfoToJsonString(x))
-    val rest = datax map (x => (x._2.get("name").getAsString, x._1))
-    val jsonObj = new JsonObject
-    rest foreach (x => jsonObj.addProperty(x._1, x._2))
-
-    val path: Path = Files.createFile(Paths.get(s"place_reg.json"))
-    Files.write(path, jsonObj.toString.getBytes())
-    CloudStorage.upload("", "register/places_register", path)
-    Files.delete(path)
-  }
 
   private def rawData(stationData : List[StationForecast]): Unit = {
     val data: List[(String, JsonObject)] = stationData.map(x => dataProcessing.countyInfoToJsonString(x))
     val timeStamp = s"${LocalDateTime.now().withNano(0).withHour(0).withMinute(0).withSecond(0).plusDays(1)}"
     val path: Path = Files.createFile(Paths.get(s"${timeStamp}.json"))
-    data foreach (x => writeAndUpload(x, s"${timeStamp}${x._2.get("name").getAsString}", path))
+    data foreach (x => writeAndUpload(x, timeStamp, path))
     Files.delete(path)
   }
 

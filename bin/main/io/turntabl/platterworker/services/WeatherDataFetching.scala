@@ -26,15 +26,9 @@ class WeatherDataFetching {
 
   def forecastFromAllStations(): List[StationForecast] = {
     val dfs = dataFromStation()
-    val stationInformation =  dfs map( x => {
-      forecastFromSingleStation(x.locationId)
-    }) filter( y => hasBasicFeatures(y))
-    val data: List[(StationInformation, JsonObject)] = dfs zip(stationInformation)
+    val stationInformation =  dfs map( x => forecastFromSingleStation(x.locationId))
+    val data = dfs zip(stationInformation)
     data map StationForecastCreator
-  }
-  def hasBasicFeatures(raw: JsonObject): Boolean = {
-    ( raw.keySet().contains("Location") && raw.get("Location").getAsJsonObject.keySet().contains("country")
-      && raw.get("Location").getAsJsonObject.keySet().contains("Period"))
   }
 
   def StationForecastCreator( data: (StationInformation, JsonObject)): StationForecast = {
