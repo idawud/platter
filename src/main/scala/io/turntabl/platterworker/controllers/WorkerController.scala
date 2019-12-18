@@ -129,12 +129,26 @@ class WorkerController() {
       val route: String = jobberz.getAsJsonObject.get(name.trim).getAsString
       val contents: String = CloudStorage.contentOfObject(s"${route}${date}${name.trim}.json")
       val jobber = parser.parse(contents)
-      return jobber.getAsJsonObject
+      jobber.getAsJsonObject
     }
+    else{
 
-    val defaultObj = new JsonObject
-    defaultObj.addProperty("error", "PlaceNotFound")
-    defaultObj
+      val places: String = CloudStorage.contentOfObject("register/counties_register.json")
+      val jobberz = parser.parse(places)
+
+      if ( jobberz.getAsJsonObject.keySet().contains(name.trim)) {
+        val route: String = jobberz.getAsJsonObject.get(name.trim).getAsString
+        val ls: String = CloudStorage.listObjects().filter(x => x.startsWith(s"${route}${date}")) .head
+        val contents: String = CloudStorage.contentOfObject(ls)
+
+        val jobber = parser.parse(contents)
+        jobber.getAsJsonObject.addProperty("name", name.trim.capitalize)
+        return jobber.getAsJsonObject
+      }
+      val defaultObj = new JsonObject
+      defaultObj.addProperty("error", "PlaceNotFound")
+      defaultObj
+    }
   }
 
 }
