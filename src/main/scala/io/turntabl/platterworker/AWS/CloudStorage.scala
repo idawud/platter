@@ -18,6 +18,7 @@ object CloudStorage {
     res.toList
   }
 
+
   def contentOfObject(objectPath: String): String = {
     val s3object = s3client.getObject(bucketName, objectPath)
     val inputStream = s3object.getObjectContent
@@ -28,7 +29,7 @@ object CloudStorage {
 
   private def connectionInstance = {
    val credentials = new BasicAWSCredentials(System.getenv("AWS_KEY"), System.getenv("AWS_SECRET") )
-    val s3client = AmazonS3ClientBuilder
+   val s3client = AmazonS3ClientBuilder
       .standard()
       .withCredentials(new AWSStaticCredentialsProvider(credentials))
       .withRegion(Regions.EU_WEST_2) // eu-west-2

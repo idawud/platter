@@ -18,7 +18,7 @@ object ServiceRunner {
      updateRegister(data)
    }
 
-  private def updateRegister(data: List[StationForecast]) = {
+  private def updateRegister(data: List[StationForecast]): Unit = {
     val datax: List[(String, JsonObject)] = data.map(x => dataProcessing.countyInfoToJsonString(x))
     val rest = datax map (x => (x._2.get("name").getAsString, x._1))
     val jsonObj = new JsonObject
@@ -27,7 +27,18 @@ object ServiceRunner {
     val path: Path = Files.createFile(Paths.get(s"place_reg.json"))
     Files.write(path, jsonObj.toString.getBytes())
     CloudStorage.upload("", "register/places_register", path)
+
+    val jsonObjCount = new JsonObject
+    datax map ( x => x._1) foreach ( x => jsonObjCount.addProperty(splitAndGetCountyName(x), x))
+    Files.write(path, jsonObjCount.toString.getBytes())
+    CloudStorage.upload("", "register/counties_register", path)
     Files.delete(path)
+  }
+
+  private def splitAndGetCountyName(cc: String): String = {
+    val st = cc.indexOf("/")
+    val ed = cc.lastIndexOf("/")
+    cc.substring(st + 1, ed)
   }
 
   private def rawData(stationData : List[StationForecast]): Unit = {
@@ -38,7 +49,7 @@ object ServiceRunner {
     Files.delete(path)
   }
 
-  def aggregation(data : List[StationForecast] ): Unit = {
+  private def aggregation(data : List[StationForecast] ): Unit = {
     val ukAvg: (Double, Double, Double) = allAverages( data map  dataProcessing.getAverages)
     val sortedByCountry = data groupBy(k => k.country)
     val countryAvg: Map[String, (Double, Double, Double)] = sortedByCountry map (v => (v._1, allAverages(v._2 map dataProcessing.getAverages)))
@@ -68,7 +79,7 @@ object ServiceRunner {
     CloudStorage.upload(timeStamp, "summary/UK/", path)
   }
 
-  def tuple3DoubleToObject(d: (Double, Double, Double), place: String ): JsonObject = {
+  private def tuple3DoubleToObject(d: (Double, Double, Double), place: String ): JsonObject = {
     val summary = new JsonObject
     summary.addProperty("desc", s"Average of Whole of the ${place}")
     summary.addProperty("temp", d._1)
