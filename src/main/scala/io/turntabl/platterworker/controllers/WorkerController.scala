@@ -8,6 +8,8 @@ import io.turntabl.platterworker.AWS.CloudStorage
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation._
 
+import scala.util.control.Breaks
+
 
 @RestController
 @CrossOrigin(origins = Array("*"))
@@ -21,6 +23,41 @@ class WorkerController() {
     places
   }
 
+  def stamp(time: String): Int = {
+    var value: Int = Integer.parseInt(time.split("T").last.substring(0, 2))
+    while (value % 3 != 0) { value -= 1 }
+    value
+  }
+
+  @RequestMapping(path = Array("/alert"), method = Array(RequestMethod.GET), produces = Array(MediaType.APPLICATION_JSON_VALUE))
+  def alert(): JsonObject = {
+    val places = getPlaces("places")
+    val iter = places.iterator()
+    val parser = new JsonParser
+    val places_register: String = CloudStorage.contentOfObject("register/places_register.json")
+    val jobberz = parser.parse(places_register)
+    val date: String = s"${LocalDateTime.now().withNano(0).withHour(0).withMinute(0).withSecond(0)}"
+
+    val obj = new JsonObject
+    while ( iter.hasNext ) {
+      val key = iter.next()
+      val route: String = jobberz.getAsJsonObject.get(key).getAsString
+      val contents: String = CloudStorage.contentOfObject(s"${route}${date}${key}.json")
+      val jobber = parser.parse(contents).getAsJsonObject.get("periods").getAsJsonArray
+      val time: String = s"${LocalDateTime.now().withNano(0).withMinute(0).withSecond(0)}"
+
+      val valueOfCurrentTimeStamp = stamp(time)
+
+      for ( x <- 0 until  jobber.size()) {
+        val temp = jobber.get(x).getAsJsonObject
+        if ( temp.get("timestamp").getAsString.split("T").last.startsWith(String.valueOf(valueOfCurrentTimeStamp))){
+          val value: String = temp.get("reading").getAsJsonObject.get("weatherType").getAsString
+          obj.addProperty(key, value)
+        }
+      }
+    }
+    obj
+  }
 
   @RequestMapping(path = Array("/summary"), method = Array(RequestMethod.GET), produces = Array(MediaType.APPLICATION_JSON_VALUE))
   def summary(): JsonObject = {

@@ -29,7 +29,7 @@ object CloudStorage {
 
   private def connectionInstance = {
    val credentials = new BasicAWSCredentials(System.getenv("AWS_KEY"), System.getenv("AWS_SECRET") )
-   val s3client = AmazonS3ClientBuilder
+    val s3client = AmazonS3ClientBuilder
       .standard()
       .withCredentials(new AWSStaticCredentialsProvider(credentials))
       .withRegion(Regions.EU_WEST_2) // eu-west-2
